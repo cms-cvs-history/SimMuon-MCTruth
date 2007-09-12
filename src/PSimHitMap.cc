@@ -13,10 +13,10 @@ PSimHitMap::PSimHitMap(const std::string & collectionName)
 void PSimHitMap::fill(const edm::Event & e)
 {
   theMap.clear();
-  edm::Handle<CrossingFrame<PSimHit> > cf;
-  e.getByLabel("mix" , theCollectionName, cf);
+  edm::Handle<CrossingFrame> cf;
+  e.getByType(cf);
   
-  MixCollection<PSimHit> simHits(cf.product());
+  MixCollection<PSimHit> simHits(cf.product(), theCollectionName);
 
   // arrange the hits by detUnit
   for(MixCollection<PSimHit>::MixItr hitItr = simHits.begin();
