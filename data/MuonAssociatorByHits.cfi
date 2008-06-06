@@ -1,0 +1,83 @@
+ module muonAssociatorByHits = MuonAssociatorEDProducer {
+
+### for Muon Track association
+
+#   input collections
+
+# ... reco::Track collection 
+    InputTag tracksTag = standAloneMuons
+#    InputTag tracksTag = standAloneMuons:UpdatedAtVtx
+#    InputTag tracksTag = globalMuons
+
+# ... TrackingParticle collection 
+    InputTag tpTag = mergedtruth:MergedTrackTruth
+
+    bool dumpInputCollections = false
+
+#....... general input parameters
+#
+    bool AbsoluteNumberOfHits_track = false
+    uint32 MinHitCut_track = 1  
+    bool AbsoluteNumberOfHits_muon = false
+    uint32 MinHitCut_muon = 1
+
+    double PurityCut_track = 0.5
+    double PurityCut_muon  = 0.5
+
+    double EfficiencyCut_track = 0.5
+    double EfficiencyCut_muon = 0.5
+
+#........(for inner tracker stub of Global Muons)...
+    bool UsePixels = true
+    bool UseGrouped = true
+    bool UseSplitting = true
+    bool ThreeHitTracksAreSpecial = true
+
+### for DT Hit associator
+    bool crossingframe = true
+    InputTag simtracksTag = g4SimHits
+    InputTag simtracksXFTag = mix:g4SimHits
+
+    InputTag DTsimhitsTag = g4SimHits:MuonDTHits
+    InputTag DTsimhitsXFTag = mix:g4SimHitsMuonDTHits
+    InputTag DTdigiTag = simMuonDTDigis
+    InputTag DTdigisimlinkTag = simMuonDTDigis
+    InputTag DTrechitTag = dt1DRecHits
+
+    bool dumpDT = false
+    bool links_exist = true
+    bool associatorByWire = false	
+
+### for CSC Hit associator
+    InputTag CSCsimHitsXFTag = mix:g4SimHitsMuonCSCHits
+    InputTag CSClinksTag = simMuonCSCDigis:MuonCSCStripDigiSimLinks
+    InputTag CSCwireLinksTag = simMuonCSCDigis:MuonCSCWireDigiSimLinks
+
+### for RPC Hit associator
+    InputTag RPCsimhitsXFTag = mix:g4SimHitsMuonRPCHits 
+    InputTag RPCdigisimlinkTag = simMuonRPCDigis:RPCDigiSimLink
+
+### for Tracker Hit associator
+#
+    bool associatePixel = true
+    bool associateStrip = true
+    bool associateRecoTracks = true
+
+    vstring ROUList = {
+	#For running only strip or pixel comment out the appropriate strings
+	#TIB
+	"TrackerHitsTIBLowTof","TrackerHitsTIBHighTof",
+	#TID
+	"TrackerHitsTIDLowTof","TrackerHitsTIDHighTof",
+	#TOB
+	"TrackerHitsTOBLowTof","TrackerHitsTOBHighTof",
+	#TEC
+	"TrackerHitsTECLowTof","TrackerHitsTECHighTof",
+	#BPIX
+	"TrackerHitsPixelBarrelLowTof","TrackerHitsPixelBarrelHighTof",
+	#FPIX
+	"TrackerHitsPixelEndcapLowTof","TrackerHitsPixelEndcapHighTof"
+    }
+
+}
+
