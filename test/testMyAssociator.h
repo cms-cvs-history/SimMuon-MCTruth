@@ -23,8 +23,9 @@ class testMyAssociator : public edm::EDAnalyzer {
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   
  private:
-  edm::InputTag tracksTag, tpTag, simtracksTag;
-  const edm::ParameterSet  parset_;
+  edm::InputTag tracksTag;
+  edm::InputTag tpTag;
+  const edm::ParameterSet parset_;
 
   MuonAssociatorByHits * associatorByHits;
   
