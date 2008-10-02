@@ -36,13 +36,13 @@ void testMyAssociator::analyze(const edm::Event& event, const edm::EventSetup& s
   const TrackingParticleCollection tPC   = *(TPCollectionH.product());
   LogTrace("testMyAssociator") << "...size = "<<tPC.size();
 
-  edm::LogVerbatim("testMyAssociator") <<"\n" <<"Event ID = "<< event.id();
-  
+  edm::LogVerbatim("testMyAssociator") <<"\n === Event ID = "<< event.id()<<" ===";
+    
   //RECOTOSIM 
   edm::LogVerbatim("testMyAssociator") 
     << "\n                      ****************** Reco To Sim ****************** ";
   edm::LogVerbatim("testMyAssociator")
-    << "\n" << "There are " << trackCollection.size() << " reco::Track's";
+    << "\n There are " << trackCollection.size() << " reco::Track's"<<"\n";
 
   reco::RecoToSimCollection recSimColl = 
     associatorByHits->associateRecoToSim(trackCollectionH,TPCollectionH,&event,&setup);
@@ -73,7 +73,8 @@ void testMyAssociator::analyze(const edm::Event& event, const edm::EventSetup& s
   edm::LogVerbatim("testMyAssociator") 
     << "\n                      ****************** Sim To Reco ****************** ";
   edm::LogVerbatim("testMyAssociator")
-    << "\n" << "There are " << tPC.size() << " TrackingParticle's";
+    << "\n There are " << tPC.size() << " TrackingParticle's"<<"\n";
+
   bool any_trackingParticle_matched = false;
 
   reco::SimToRecoCollection simRecColl =
