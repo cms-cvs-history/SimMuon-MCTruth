@@ -41,11 +41,12 @@ void testMyAssociator::analyze(const edm::Event& event, const edm::EventSetup& s
   //RECOTOSIM 
   edm::LogVerbatim("testMyAssociator") 
     << "\n                      ****************** Reco To Sim ****************** ";
-  edm::LogVerbatim("testMyAssociator")
-    << "\n There are " << trackCollection.size() << " reco::Track's"<<"\n";
 
   reco::RecoToSimCollection recSimColl = 
     associatorByHits->associateRecoToSim(trackCollectionH,TPCollectionH,&event,&setup);
+
+  edm::LogVerbatim("testMyAssociator")
+    << "\n There are " << trackCollection.size() << " reco::Tracks "<< "("<<recSimColl.size()<<" matched) \n";
 
   for(edm::View<reco::Track>::size_type i=0; i<trackCollection.size(); ++i) {
     edm::RefToBase<reco::Track> track(trackCollectionH, i);
@@ -53,15 +54,13 @@ void testMyAssociator::analyze(const edm::Event& event, const edm::EventSetup& s
     if(recSimColl.find(track) != recSimColl.end()) {
       std::vector<std::pair<TrackingParticleRef, double> > recSimAsso = recSimColl[track];
       
-      if (recSimAsso.size()!=0) {
-	for (std::vector<std::pair<TrackingParticleRef, double> >::const_iterator IT = recSimAsso.begin(); 
-	     IT != recSimAsso.end(); ++IT) {
-	  TrackingParticleRef trpart = IT->first;
-	  double quality = IT->second;
-	  edm::LogVerbatim("testMyAssociator") <<"reco::Track #" << int(i) << " with pt = " << track->pt()
-					       << " associated to TrackingParticle #" <<trpart.key()
-					       << " (pt = " << trpart->pt() << ") with Quality = " << quality;
-	}
+      for (std::vector<std::pair<TrackingParticleRef, double> >::const_iterator IT = recSimAsso.begin(); 
+	   IT != recSimAsso.end(); ++IT) {
+	TrackingParticleRef trpart = IT->first;
+	double purity = IT->second;
+	edm::LogVerbatim("testMyAssociator") <<"reco::Track #" << int(i) << " with pt = " << track->pt()
+					     << " associated to TrackingParticle #" <<trpart.key()
+					     << " (pt = " << trpart->pt() << ") with Quality = " << purity;
       }
     } else {
       edm::LogVerbatim("testMyAssociator") << "reco::Track #" << int(i) << " with pt=" << track->pt()
@@ -72,14 +71,15 @@ void testMyAssociator::analyze(const edm::Event& event, const edm::EventSetup& s
   //SIMTORECO
   edm::LogVerbatim("testMyAssociator") 
     << "\n                      ****************** Sim To Reco ****************** ";
-  edm::LogVerbatim("testMyAssociator")
-    << "\n There are " << tPC.size() << " TrackingParticle's"<<"\n";
-
-  bool any_trackingParticle_matched = false;
 
   reco::SimToRecoCollection simRecColl =
     associatorByHits->associateSimToReco(trackCollectionH,TPCollectionH,&event,&setup);
   
+  edm::LogVerbatim("testMyAssociator")
+    << "\n There are " << tPC.size() << " TrackingParticles "<<"("<<simRecColl.size()<<" matched) \n";
+
+  bool any_trackingParticle_matched = false;
+
   for (TrackingParticleCollection::size_type i=0; i<tPC.size(); i++) {
     TrackingParticleRef trpart(TPCollectionH, i);
     
@@ -87,16 +87,27 @@ void testMyAssociator::analyze(const edm::Event& event, const edm::EventSetup& s
     if(simRecColl.find(trpart) != simRecColl.end()) { 
       simRecAsso = (std::vector<std::pair<edm::RefToBase<reco::Track>, double> >) simRecColl[trpart];
       
-      if (simRecAsso.size()!=0) {	
-	for (std::vector<std::pair<edm::RefToBase<reco::Track>, double> >::const_iterator IT = simRecAsso.begin(); 
-	     IT != simRecAsso.end(); ++IT) {
-	  edm::RefToBase<reco::Track> track = IT->first;
-	  double quality = IT->second;
-	  edm::LogVerbatim("testMyAssociator") <<"TrackingParticle #" << int(i)<< " with pt = " << trpart->pt()
-					 << " associated to reco::Track #" <<track.key()
-					 << " (pt = " << track->pt() << ") with Quality = " << quality;
-	  any_trackingParticle_matched = true;
+      for (std::vector<std::pair<edm::RefToBase<reco::Track>, double> >::const_iterator IT = simRecAsso.begin(); 
+	   IT != simRecAsso.end(); ++IT) {
+	edm::RefToBase<reco::Track> track = IT->first;
+	double quality = IT->second;
+	any_trackingParticle_matched = true;
+
+	// find the purity from RecoToSim association (set purity = -1 for unmatched recoToSim)
+	double purity = -1.;
+	if(recSimColl.find(track) != recSimColl.end()) {
+	  std::vector<std::pair<TrackingParticleRef, double> > recSimAsso = recSimColl[track];
+	  for (std::vector<std::pair<TrackingParticleRef, double> >::const_iterator ITS = recSimAsso.begin(); 
+	       ITS != recSimAsso.end(); ++ITS) {
+	    TrackingParticleRef tp = ITS->first;
+	    if (tp == trpart) purity = ITS->second;
+	  }
 	}
+
+	edm::LogVerbatim("testMyAssociator") <<"TrackingParticle #" << int(i)<< " with pt = " << trpart->pt()
+					     << " associated to reco::Track #" <<track.key()
+					     << " (pt = " << track->pt() << ") with Quality = " << quality
+	                                     << " and Purity = "<< purity;
       }
     } 
     
