@@ -7,7 +7,8 @@ process.maxEvents = cms.untracked.PSet(
 )
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:RelVal.root')
+    fileNames = cms.untracked.vstring('file:RelVal_GEN-SIM-RECO.root'),
+    secondaryFileNames = cms.untracked.vstring('file:RelVal_GEN-SIM-DIGI-RAW-HLTDEBUG.root')
 )
 
 # MessageLogger
@@ -24,7 +25,7 @@ process.MessageLogger.cout = cms.untracked.PSet(
         limit = cms.untracked.int32(0)
     ),
     default = cms.untracked.PSet(
-        limit = cms.untracked.int32(10000000)
+        limit = cms.untracked.int32(0)
     ),
     testMyAssociator = cms.untracked.PSet(
         limit = cms.untracked.int32(10000000)
@@ -71,10 +72,12 @@ process.MessageLogger.cerr = cms.untracked.PSet(
 # Mixing Module
 process.load("SimGeneral.MixingModule.mixNoPU_cfi")
 
+# Standard Sequences
 process.load("Configuration.StandardSequences.Geometry_cff")
-process.load("Configuration.StandardSequences.FakeConditions_cff")
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+process.GlobalTag.globaltag = cms.string('IDEAL_30X::All')
 
-# --- Analyzer running MuonAssociatorByHits 
+# --- example Analyzer running MuonAssociatorByHits 
 process.testanalyzer = cms.EDAnalyzer("testMyAssociator",
     # for Muon Track association
     #
@@ -98,13 +101,13 @@ process.testanalyzer = cms.EDAnalyzer("testMyAssociator",
     AbsoluteNumberOfHits_muon = cms.bool(False),
     MinHitCut_muon = cms.uint32(1),
     #
+    UseTracker = cms.bool(False),
+    UseMuon = cms.bool(True),
+    #
     PurityCut_track = cms.double(0.5),
     PurityCut_muon = cms.double(0.5),
     #
-    SimToReco_useTracker = cms.bool(False),
     EfficiencyCut_track = cms.double(0.5),
-    #
-    SimToReco_useMuon = cms.bool(True),
     EfficiencyCut_muon = cms.double(0.5),
     #
     #........(for inner tracker stub of Global Muons)...
