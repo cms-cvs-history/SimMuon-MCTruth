@@ -61,7 +61,7 @@ process.MessageLogger.cout = cms.untracked.PSet(
     )
 )
 
-process.MessageLogger.statistics = cms.untracked.vstring('cout')
+#process.MessageLogger.statistics = cms.untracked.vstring('cout')
 
 process.MessageLogger.cerr = cms.untracked.PSet(
     placeholder = cms.untracked.bool(True)
