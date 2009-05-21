@@ -42,9 +42,6 @@ process.MessageLogger.cout = cms.untracked.PSet(
     MuonTruth = cms.untracked.PSet(
         limit = cms.untracked.int32(0)
     ),
-    PSimHitMap = cms.untracked.PSet(
-        limit = cms.untracked.int32(0)
-    ),
     FwkReport = cms.untracked.PSet(
         reportEvery = cms.untracked.int32(1),
         limit = cms.untracked.int32(10000000)
@@ -75,7 +72,7 @@ process.load("SimGeneral.MixingModule.mixNoPU_cfi")
 # Standard Sequences
 process.load("Configuration.StandardSequences.Geometry_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = cms.string('IDEAL_30X::All')
+process.GlobalTag.globaltag = cms.string('IDEAL_31X::All')
 
 # --- example Analyzer running MuonAssociatorByHits 
 process.testanalyzer = cms.EDAnalyzer("testMyAssociator",
@@ -92,6 +89,7 @@ process.testanalyzer = cms.EDAnalyzer("testMyAssociator",
     # ... TrackingParticle collection
     tpTag = cms.InputTag("mergedtruth","MergedTrackTruth"),
     #
+    ignoreMissingTrackCollection = cms.untracked.bool(False),
     dumpInputCollections = cms.bool(False),
     #
     #....... general input parameters
@@ -117,7 +115,7 @@ process.testanalyzer = cms.EDAnalyzer("testMyAssociator",
     ThreeHitTracksAreSpecial = cms.bool(True),
     #
     # for DT Hit associator
-    crossingframe = cms.bool(True),
+    crossingframe = cms.bool(False),
     simtracksTag = cms.InputTag("g4SimHits"),
     simtracksXFTag = cms.InputTag("mix","g4SimHits"),
     #
@@ -132,11 +130,13 @@ process.testanalyzer = cms.EDAnalyzer("testMyAssociator",
     associatorByWire = cms.bool(False),
     #
     # for CSC Hit associator
+    CSCsimHitsTag = cms.InputTag("g4SimHits","MuonCSCHits"),
     CSCsimHitsXFTag = cms.InputTag("mix","g4SimHitsMuonCSCHits"),
     CSClinksTag = cms.InputTag("simMuonCSCDigis","MuonCSCStripDigiSimLinks"),
     CSCwireLinksTag = cms.InputTag("simMuonCSCDigis","MuonCSCWireDigiSimLinks"),
     #
     # for RPC Hit associator
+    RPCsimhitsTag = cms.InputTag("g4SimHits","MuonRPCHits"),
     RPCsimhitsXFTag = cms.InputTag("mix","g4SimHitsMuonRPCHits"),
     RPCdigisimlinkTag = cms.InputTag("simMuonRPCDigis","RPCDigiSimLink"),
     #
@@ -160,4 +160,5 @@ process.testanalyzer = cms.EDAnalyzer("testMyAssociator",
         'TrackerHitsPixelEndcapHighTof')
 )
 
-process.test = cms.Path(process.mix * process.testanalyzer)
+#process.test = cms.Path(process.mix * process.testanalyzer)
+process.test = cms.Path(process.testanalyzer)
