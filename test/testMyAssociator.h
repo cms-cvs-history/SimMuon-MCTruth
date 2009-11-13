@@ -19,7 +19,7 @@ class testMyAssociator : public edm::EDAnalyzer {
  public:
   testMyAssociator(const edm::ParameterSet&);
   virtual ~testMyAssociator();
-  virtual void beginJob( const edm::EventSetup& );  
+  virtual void beginJob();  
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   
  private:

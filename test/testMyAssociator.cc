@@ -15,7 +15,7 @@ testMyAssociator::testMyAssociator(const edm::ParameterSet& parset) :
 testMyAssociator::~testMyAssociator() {
 }
 
-void testMyAssociator::beginJob(const edm::EventSetup & setup) {
+void testMyAssociator::beginJob() {
 
   associatorByHits = new MuonAssociatorByHits::MuonAssociatorByHits(parset_);
 }
