@@ -141,8 +141,7 @@ TrackerMuonHitExtractor::getMuonHits(const reco::Muon &mu) const {
 	    float segmentdXdZerr = segmentMatch->dXdZErr;
 	    float segmentdYdZerr = segmentMatch->dYdZErr;
 	    
-	    bool segment_arbitrated_Ok = (segmentMatch->isMask(reco::MuonSegmentMatch::BestInChamberByDR) && 
-					  segmentMatch->isMask(reco::MuonSegmentMatch::BelongsToTrackByDR));
+	    bool segment_arbitrated_Ok = (segmentMatch->isMask(reco::MuonSegmentMatch::BestInChamberByDR));
 	    
 	    std::string ARBITRATED(" ***Arbitrated Off*** ");
 	    if (segment_arbitrated_Ok) ARBITRATED = " ***ARBITRATED OK*** ";
