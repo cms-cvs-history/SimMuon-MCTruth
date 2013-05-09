@@ -155,9 +155,15 @@ void MuonTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
       newTrk->setExtra( reco::TrackExtraRef( rTrackExtras, idx++ ) );
       PropagationDirection seedDir = trk->seedDirection();
       // new copy of track Extras
-      reco::TrackExtra * newExtra = new reco::TrackExtra( trk->outerPosition(), trk->outerMomentum(), 
-                                        trk->outerOk(), trk->innerPosition(), 
-                                        trk->innerMomentum(), trk->innerOk(),
+      // Use reduced format (AA)
+//      reco::TrackExtra * newExtra = new reco::TrackExtra( trk->outerPosition(), trk->outerMomentum(), 
+//                                        trk->outerOk(), trk->innerPosition(), 
+//                                        trk->innerMomentum(), trk->innerOk(),
+//                                        trk->outerStateCovariance(), trk->outerDetId(),
+//                                        trk->innerStateCovariance(), trk->innerDetId() , seedDir ) ;
+      reco::TrackExtra * newExtra = new reco::TrackExtra(  
+                                        trk->outerOk(), 
+                                        trk->innerOk(),
                                         trk->outerStateCovariance(), trk->outerDetId(),
                                         trk->innerStateCovariance(), trk->innerDetId() , seedDir ) ;
 
